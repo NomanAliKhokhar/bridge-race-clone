@@ -18,6 +18,9 @@ public class ContestantAI : Character
     private BridgeController currentBridge;
     private float timeStuck;
     private Vector3 lastPosition;
+
+
+
     public override void Init(Color color)
     {
         base.Init(color);
@@ -34,9 +37,12 @@ public class ContestantAI : Character
                 IdleState();
                 break;
             case State.Move:
+                Debug.Log("CheckSteps 1");
 
                 if (currentBridge is not null && !CheckSteps())
                 {
+                    Debug.Log("CheckSteps 2");
+
                     currentBridge = null;
                     targetPosition = transform.position;
                     agent.SetDestination(targetPosition);
@@ -44,6 +50,8 @@ public class ContestantAI : Character
                 }
                 else if (Vector3.Distance(transform.position, targetPosition) < agent.stoppingDistance)
                 {
+                    Debug.Log("CheckSteps 3");
+
                     currentBridge = null;
                     SetState(State.Decision);
                 }
@@ -90,7 +98,7 @@ public class ContestantAI : Character
         if (StackPoint.childCount > BrickMoveCount)
         {
             //yeterli tugla var kopruye git!
-            currentBridge = GameManager.Instance.FindBestBridge(Color);
+            currentBridge = GameManager.Instance.FindBestBridge(Color, currentFloor);
             targetPosition = currentBridge.TopPosition;
             SetState(State.Move);
             return;

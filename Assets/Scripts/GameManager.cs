@@ -22,8 +22,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera vcam;
     [SerializeField] private CanvasGroup GameOverUI;
     [SerializeField] private Player player;
-    [SerializeField] private BridgeController[] bridges;
-    [SerializeField] private BrickSpawner brickSpawner;
+    //[SerializeField] private BridgeController[] bridges;
+    //[SerializeField] private BrickSpawner[] brickSpawners;
+    [SerializeField] private int currentFloor;
+    [SerializeField] private Floor[] floors;
     [SerializeField] private Color[] Colors;
     [SerializeField] private Color naturalColor;
 
@@ -57,10 +59,6 @@ public class GameManager : MonoBehaviour
     {
 
         Clear();
-        foreach (BridgeController bridge in bridges)
-        {
-            bridge.SetAllStepsToNatural();
-        }
 
 
 
@@ -69,7 +67,9 @@ public class GameManager : MonoBehaviour
         randomContestantCount = Random.Range(2, Colors.Length);
 
         player.Init(PlayerColor);
-        brickSpawner.Init();
+
+        UnlockNextFloor();
+
 
         for (int i = randomContestantCount - 1; i >= 1; i--)
         {
@@ -117,20 +117,19 @@ public class GameManager : MonoBehaviour
 
     }
 
-
-    public BridgeController FindBestBridge(Color characterColor)
+    public void UnlockNextFloor()
     {
-        BridgeController bestBridge = bridges[Random.Range(0, bridges.Length)];
-        int maxCount = 0;
-        foreach (BridgeController bridge in bridges)
+        if (currentFloor < floors.Length)
         {
-            int count = bridge.GetColorCount(characterColor);
-            if (count > maxCount)
-            {
-                bestBridge = bridge;
-                maxCount = count;
-            }
+            floors[currentFloor].Init();
+            currentFloor++;
         }
+    }
+
+
+    public BridgeController FindBestBridge(Color characterColor, int CurrentFloor)
+    {
+        BridgeController bestBridge = floors[CurrentFloor].FindBestBridge(characterColor);
         return bestBridge;
 
     }

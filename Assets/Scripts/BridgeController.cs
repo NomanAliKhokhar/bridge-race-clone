@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class BridgeController : MonoBehaviour
@@ -6,7 +7,13 @@ public class BridgeController : MonoBehaviour
     public Vector3 TopPosition => topPoint.position;
 
     [SerializeField] private Transform topPoint;
+
+
     int stepCount;
+    public bool IsbridgeCompleted { get; private set; }
+    public bool IsMarkBridgeUnUsed { get; private set; }
+
+
 #if UNITY_EDITOR
     private void OnValidate()
     {
@@ -35,6 +42,18 @@ public class BridgeController : MonoBehaviour
                 counter++;
         }
         return counter;
+    }
+
+    public void MarkBridgeCompleted()
+    {
+        IsbridgeCompleted = true;
+        topPoint.gameObject.SetActive(false);
+    }
+
+    public void MarkBridgeUnUsed()
+    {
+        IsMarkBridgeUnUsed = true;
+        topPoint.gameObject.SetActive(false);
     }
 
 }
